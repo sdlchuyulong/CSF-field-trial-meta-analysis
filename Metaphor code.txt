@@ -1,0 +1,28 @@
+# install package (metaphor)
+
+
+> library(metafor)
+>dat <- read.table(header=TRUE, text = "
+Trials      n1    mean1    sd1    n2    mean2    sd2    
+Fujian      55    91.93    9.82   54    93.68    8.93   
+Guizhou     58    82.54    9.23   59    80.52    9.32") 
+
+
+>dat
+
+
+>dat <- escalc(measure="SMD",m1i=mean1,sd1i=sd1,n1i=n1,m2i=mean2,sd2i=sd2, n2i=n2,slab=Trials,data=dat)
+>dat
+
+>res <- rma(yi, vi, data=dat, method="DL", digits=2)
+>res
+
+
+>par(mar=c(4,4,2,2))
+
+dat$weights <- paste0(round(weights(res)), "%") # weights in % (rounded)
+
+forest(res, xlim=c(-2,3), header=TRUE, top=2, mlab="Summary",
+       ilab=dat$weights, ilab.xpos=1.6, ilab.pos=2, efac=c(0,1,1.5))
+text(1.6, -1, "100%", pos=2)
+text(1.6,  8, "Weight", pos=2, font=2)
